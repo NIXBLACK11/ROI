@@ -5,29 +5,66 @@ exports.calculateEmi = async (req, res) => {
   try {
     const { loan_amount, interest_rate, loan_tenure_months, prepayment_amount } = req.body;
 
-    const emi = calculateEMI(loan_amount, interest_rate, loan_tenure_months);
-    const monthWisePayments = generateMonthWisePayments(loan_amount, interest_rate, loan_tenure_months, emi, prepayment_amount);
+    if (!loan_amount || !interest_rate || !loan_tenure_months) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const loanAmount = Number(loan_amount);
+    const interestRate = Number(interest_rate);
+    const loanTenureMonths = Number(loan_tenure_months);
+    const prepaymentAmount = prepayment_amount ? Number(prepayment_amount) : 0;
+
+    if (isNaN(loanAmount) || isNaN(interestRate) || isNaN(loanTenureMonths) || isNaN(prepaymentAmount)) {
+      return res.status(400).json({ error: 'Invalid input: All numerical fields must be valid numbers' });
+    }
+
+    if (loanAmount <= 0) {
+      return res.status(400).json({ error: 'Loan amount must be greater than 0' });
+    }
+
+    if (interestRate < 0 || interestRate > 100) {
+      return res.status(400).json({ error: 'Interest rate must be between 0 and 100' });
+    }
+
+    if (loanTenureMonths <= 0 || !Number.isInteger(loanTenureMonths)) {
+      return res.status(400).json({ error: 'Loan tenure must be a positive integer' });
+    }
+
+    if (prepaymentAmount < 0) {
+      return res.status(400).json({ error: 'Prepayment amount cannot be negative' });
+    }
+
+    if (prepaymentAmount >= loanAmount) {
+      return res.status(400).json({ error: 'Prepayment amount must be less than the loan amount' });
+    }
+
+    const emi = calculateEMI(loanAmount, interestRate, loanTenureMonths);
+    const monthWisePayments = generateMonthWisePayments(loanAmount, interestRate, loanTenureMonths, emi, prepaymentAmount);
+
+    const remainingBalance = loanAmount - prepaymentAmount;
 
     const emiRecord = await Emi.create({
-      loan_amount,
-      interest_rate,
+      loan_amount: loanAmount,
+      interest_rate: interestRate,
       loan_tenure_months: monthWisePayments.length,
       emi,
-      prepayment_amount: prepayment_amount || null,
-      remaining_balance: loan_amount-prepayment_amount,
+      prepayment_amount: prepaymentAmount || null,
+      remaining_balance: remainingBalance,
     });
 
     res.status(201).json({
-      // id: emiRecord.id,
-      loanAmount: loan_amount,
-      interestRate: interest_rate,
-      loanTenureMonths: loan_tenure_months,
+      id: emiRecord.id,
+      loanAmount,
+      interestRate,
+      loanTenureMonths,
       emi,
-      prepayment: prepayment_amount || 0,
+      prepayment: prepaymentAmount,
+      remainingBalance,
       monthWisePayments,
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error in calculateEmi:', error);
+    res.status(500).json({ error: 'An error occurred while processing your request' });
   }
 };
 
