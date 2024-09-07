@@ -59,6 +59,8 @@ This project implements a simple REST API for an EMI (Equated Monthly Installmen
 - **Access the database inside the container:**
    ```bash
    docker exec -it emi_calculator_postgres bash
+   ```
+   ```bash
    psql -U username -d emi_calculator
    ```
 
