@@ -19,31 +19,27 @@ This project implements a simple REST API for an EMI (Equated Monthly Installmen
    docker-compose up -d
    ```
 
-4. **Copy `.env.example` to `.env` and update the database credentials.**
-
-5. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-6. **Run the application:**
-   ```bash
-   npm run dev
-   ```
-
-### Database Setup
-
-7. **Copy the SQL file to the container:**
+4. **Copy the SQL file to the container:**
    ```bash
    docker cp create_emi_table.sql emi_calculator_postgres:/create_emi_table.sql
    ```
 
-8. **Execute the SQL file:**
+5. **Execute the SQL file:**
    ```bash
    docker exec -i emi_calculator_postgres psql -U username -d emi_calculator -f /create_emi_table.sql
    ```
 
----
+6. **Copy `.env.example` to `.env` and update the database credentials.**
+
+7. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+8. **Run the application:**
+   ```bash
+   npm run dev
+   ```
 
 ### Non-Essential Commands (Optional)
 
@@ -89,3 +85,13 @@ Example POST request body:
   "prepayment_amount": 20000
 }
 ```
+
+## Screenshots:
+### calculate-emi 
+![alt text](image.png)
+## get-all-emis
+![alt text](image-1.png)
+## get-emi-id
+![alt text](image-2.png)
+## postgresql DB
+![alt text](image-3.png)
