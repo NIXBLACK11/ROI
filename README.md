@@ -67,7 +67,7 @@ This project implements a simple REST API for an EMI (Equated Monthly Installmen
 - **Example database commands:**
    ```bash
    \dt
-   select * from "Emis";
+   select * from "Emis"
    ```
 
 ## API Endpoints
