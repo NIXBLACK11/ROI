@@ -18,7 +18,7 @@ exports.calculateEmi = async (req, res) => {
     });
 
     res.status(201).json({
-      id: emiRecord.id,
+      // id: emiRecord.id,
       loanAmount: loan_amount,
       interestRate: interest_rate,
       loanTenureMonths: loan_tenure_months,
@@ -48,15 +48,21 @@ exports.getEmiById = async (req, res) => {
     }
     
     const monthWisePayments = generateMonthWisePayments(
-      emi.loan_amount,
-      emi.interest_rate,
-      emi.loan_tenure_months,
-      emi.emi,
-      emi.prepayment_amount
+      parseFloat(emi.loan_amount),
+      parseFloat(emi.interest_rate),
+      parseInt(emi.loan_tenure_months),
+      parseFloat(emi.emi),
+      emi.prepayment_amount ? parseFloat(emi.prepayment_amount) : 0
     );
 
     res.status(200).json({
-      ...emi.toJSON(),
+      id: emi.id,
+      loanAmount: parseFloat(emi.loan_amount),
+      interestRate: parseFloat(emi.interest_rate),
+      loanTenureMonths: parseInt(emi.loan_tenure_months),
+      emi: parseFloat(emi.emi),
+      prepayment: emi.prepayment_amount ? parseFloat(emi.prepayment_amount) : 0,
+      remainingBalance: parseFloat(emi.remaining_balance),
       monthWisePayments,
     });
   } catch (error) {
