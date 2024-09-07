@@ -1,0 +1,54 @@
+// Use big-js library for accurate decimal calculations
+const Big = require('big-js')
+
+function calculateEMI(loanAmount, interestRate, loanTenureMonths) {
+
+  // Use exact decimal values
+  loanAmount = Big(loanAmount.toString())  
+  interestRate = Big(interestRate.toString())
+
+  // Calculate monthly rate without rounding
+  const monthlyRate = Big(interestRate).div(12).div(100)  
+
+  // Keep calculations raw without rounding
+  const emi = (loanAmount.times(monthlyRate)
+                .times(monthlyRate.pow(loanTenureMonths))
+                .div(monthlyRate.pow(loanTenureMonths).minus(1)))
+
+  // Round only at the end  
+  return emi.toFixed(4)
+}
+
+function generateMonthWisePayments(loanAmount, interestRate, loanTenureMonths, emi, prepayment) {
+
+  // Use exact decimal values
+  loanAmount = Big(loanAmount)
+  interestRate = Big(interestRate)
+  emi = Big(emi)
+  prepayment = Big(prepayment)
+
+  let balance = loanAmount
+
+  // Calculate monthly rate without rounding
+  const monthlyRate = Big(interestRate).div(12).div(100)
+
+  const payments = []
+
+  for(let month = 1; month <= loanTenureMonths; month++) {
+
+    // Keep calculations raw without rounding
+    const interestPaid = balance.times(monthlyRate)
+
+    let principalPaid = emi.minus(interestPaid)
+
+    // Rest of logic
+
+    // Round only at end
+    payments.push({
+      interestPaid: interestPaid.toFixed(4) 
+    })
+
+  }
+
+  return payments
+}

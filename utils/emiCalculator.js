@@ -11,8 +11,8 @@ function generateMonthWisePayments(loanAmount, interestRate, loanTenureMonths, e
   const payments = [];
 
   for (let month = 1; month <= loanTenureMonths; month++) {
-    const interestPaid = balance * monthlyRate;
-    let principalPaid = emi - interestPaid;
+    const interestPaid = Number((balance * monthlyRate).toFixed(2));
+    let principalPaid = Number((emi - interestPaid).toFixed(2));
     let prepaymentAmount = 0;
 
     if (month === 1 && prepayment) {
@@ -20,20 +20,15 @@ function generateMonthWisePayments(loanAmount, interestRate, loanTenureMonths, e
       balance -= prepayment;
     }
 
-    if (balance < emi) {
-      principalPaid = balance;
-      emi = balance + interestPaid;
-    }
-
-    balance -= principalPaid;
+    balance = Number((balance - principalPaid).toFixed(2));
 
     payments.push({
       month,
       emiPaid: Number(emi.toFixed(2)),
-      interestPaid: Number(interestPaid.toFixed(2)),
-      principalPaid: Number(principalPaid.toFixed(2)),
+      interestPaid,
+      principalPaid,
       prepayment: prepaymentAmount,
-      remainingBalance: Number(balance.toFixed(2)),
+      remainingBalance: balance
     });
 
     if (balance <= 0) break;
