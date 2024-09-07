@@ -30,6 +30,9 @@ This project implements a simple REST API for an EMI (Equated Monthly Installmen
    ```
 
 6. **Copy `.env.example` to `.env` and update the database credentials.**
+   ```bash
+   cp .env.example .env
+   ```
 
 7. **Install dependencies:**
    ```bash
