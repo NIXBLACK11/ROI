@@ -6,12 +6,12 @@ This project implements a simple REST API for an EMI (Equated Monthly Installmen
 
 1. **Clone the project:**
    ```bash
-   git clone project_url
+   git clone https://github.com/NIXBLACK11/ROI.git
    ```
 
 2. **Navigate to the project directory:**
    ```bash
-   cd project
+   cd ROI
    ```
 
 3. **Start the PostgreSQL server:**
